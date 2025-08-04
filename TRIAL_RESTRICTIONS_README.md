@@ -222,4 +222,4 @@ console.log(window.trialRestrictions.getTrialData());
 
 ---
 
-This system provides a seamless way to restrict trial users while maintaining a good user experience and clear upgrade path. 
+This system provides a seamless way to restrict trial users while maintaining a good user experience and clear upgrade path.  
