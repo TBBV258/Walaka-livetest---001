@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="profile_page_title">Dashboard - Walaka</title>
+    <script>
+        const repoName = 'Walaka';
+        const isGitHubPages = window.location.hostname.includes('github.io');
+        const basePath = isGitHubPages ? `/${repoName}/` : '/';
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        document.write(`<link rel="stylesheet" href="${basePath}components/trial-banner.css">`);
+        document.write(`<link rel="stylesheet" href="${basePath}components/trial-restrictions.css">`);
+        document.write(`<link rel="stylesheet" href="${basePath}components/sidebar.css">`);
+        document.write(`<link rel="stylesheet" href="${basePath}css/styles.css">`);
+        document.write(`<link rel="stylesheet" href="${basePath}css/metrics.css">`);
+        document.write(`<link rel="stylesheet" href="${basePath}css/hints.css">`);
+    </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" type="image/png" href="assets/images/walaka-assistant.PNG">
+    <script src="js/darkmode.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar { flex-shrink: 0; }
+        .sidebar-overlay { display: none; }
+        .main-content {
+            flex: 1;
+            padding: 0;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem 1rem 1.5rem;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            min-height: 64px;
+        }
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #333;
+            cursor: pointer;
+        }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+        .notification-bell {
+            position: relative;
+        }
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc2626;
+            color: #fff;
+            border-radius: 50%;
+            padding: 0 4px;
+            font-size: 0.75rem;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .avatar i { font-size: 1.5rem; color: #6b7280; }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 120%;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            border-radius: 8px;
+            min-width: 160px;
+            z-index: 1000;
+        }
+        .user-profile.open .dropdown-menu { display: flex; flex-direction: column; }
+        .dropdown-menu a {
+            padding: 0.75rem 1.25rem;
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+            transition: background 0.15s;
+        }
+        .dropdown-menu a:hover { background: #f5f5f5; }
+        .profile-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            margin: 2rem auto 0 auto;
+            max-width: 700px;
+            width: 100%;
+            padding: 2.5rem 2rem 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .profile-tab {
+            background: #f5f7fa;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.7rem 1.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2563eb;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .profile-tab.active {
+            background: #2563eb;
+            color: #fff;
+        }
+        .profile-tab.danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        .profile-tab:not(.active):hover { background: #e0e7ef; }
+        .profile-section { display: none; }
+        .profile-section.active { display: block; }
+        .profile-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            text-align: center;
+        }
+        .profile-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .subscription-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+        }
+        .subscription-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 1.08rem;
+        }
+        .subscription-list li:last-child { border-bottom: none; }
+        .subscription-list .label { color: #64748b; font-weight: 500; }
+        .subscription-list .value { font-weight: 600; color: #1e293b; }
+        .subscription-list .value.overdue { color: #dc2626; }
+        .overdue-indicator { color: #dc2626; font-weight: 700; margin-right: 0.5rem; }
+        .billing-form input, .billing-form select {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .billing-form label { font-weight: 500; margin-bottom: 0.3rem; display: block; }
+        .billing-form .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .history-table th, .history-table td {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        .history-table th {
+            background: #f5f7fa;
+            color: #2563eb;
+            font-weight: 600;
+        }
+        .cancel-section {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        .cancel-section .danger {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .cancel-section .danger:hover { background: #dc2626; }
+        /* Modal styles */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.25); z-index: 10000; align-items: center; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            max-width: 400px;
+            width: 95vw;
+        }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+        .modal-header h2 { font-size: 1.3rem; font-weight: 700; margin: 0; }
+        .close-modal { background: none; border: none; font-size: 1.5rem; color: #888; cursor: pointer; margin-left: 1rem; }
+        .modal-body { font-size: 1.05rem; color: #222; margin-bottom: 0.5rem; }
+        .modal-footer { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+        .modal-footer button { min-width: 120px; font-size: 1rem; padding: 0.7rem 1.2rem; border-radius: 1.5rem; }
+        @media (max-width: 700px) {
+            .profile-card { max-width: 98vw; padding: 1.2rem 0.5rem; }
+            .modal-content { max-width: 98vw; padding: 1.2rem 0.5rem; }
+        }
+        @media (max-width: 600px) {
+            .main-content { padding: 0.5rem 0.25rem !important; align-items: stretch !important; }
+            .profile-card { margin: 1rem 0.1rem 0 0.1rem; padding: 1.2rem 0.5rem; }
+            .profile-tabs { flex-direction: column; gap: 0.5rem; margin-bottom: 1.2rem; align-items: stretch; }
+            .profile-tab { width: 100%; font-size: 1.05rem; padding: 0.9rem 0.5rem; border-radius: 1.5rem; max-width: 95vw; margin-left: auto; margin-right: auto; }
+            .profile-title { font-size: 1.15rem; }
+            .profile-subtitle { font-size: 0.95rem; }
+            .modal-content { max-width: 95vw !important; margin: 0 auto; }
+            .modal-footer { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+            .modal-footer button { width: 100%; font-size: 1.1rem; padding: 0.9rem 0.5rem; border-radius: 1.5rem; }
+        }
+        [data-theme="dark"] body, [data-theme="dark"] .dashboard-container, [data-theme="dark"] .main-content, body[data-theme="dark"] .main-content, html[data-theme="dark"] .main-content {
+            background: #181a20 !important; color: #f3f4f6 !important;
+        }
+        [data-theme="dark"] .top-bar, body[data-theme="dark"] .top-bar, html[data-theme="dark"] .top-bar {
+            background: #23262f !important; color: #f3f4f6 !important; border-bottom: 1px solid #23262f; transition: background 0.3s, color 0.3s;
+        }
+        [data-theme="dark"] .profile-card, [data-theme="dark"] .modal-content {
+            background: #23262f !important; color: #f3f4f6 !important; box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+        }
+        [data-theme="dark"] .profile-tab { background: #23262f; color: #60a5fa; border: 1px solid #23262f; }
+        [data-theme="dark"] .profile-tab.active { background: #2563eb; color: #fff; }
+        [data-theme="dark"] .profile-tab.danger { background: #ef4444; color: #fff; }
+        [data-theme="dark"] .history-table { background: #23262f; color: #f3f4f6; }
+        [data-theme="dark"] .history-table th { background: #232b3a; color: #60a5fa; border-bottom: 1px solid #333; }
+        [data-theme="dark"] .history-table td { background: #23262f; color: #f3f4f6; border-bottom: 1px solid #333; }
+        [data-theme="dark"] .history-table tr:hover td { background: #283046; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div id="sidebar-container"></div>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                fetch(`${basePath}components/sidebar.html`)
+                    .then(response => response.text())
+                    .then(html => {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const navSidebar = tempDiv.querySelector('nav.sidebar');
+                        if (navSidebar) {
+                            document.getElementById('sidebar-container').innerHTML = navSidebar.innerHTML;
+                        } else {
+                            document.getElementById('sidebar-container').innerHTML = html;
+                        }
+                        var script = document.createElement('script');
+                        script.src = `${basePath}components/sidebar-actions.js`;
+                        document.body.appendChild(script);
+                        var darkmodeScript = document.createElement('script');
+                        darkmodeScript.src = `${basePath}components/sidebar-darkmode.js`;
+                        darkmodeScript.onload = function() {
+                            setTimeout(function() {
+                                if (window.initSidebarDarkModeIcon) window.initSidebarDarkModeIcon();
+                            }, 100);
+                        };
+                        document.body.appendChild(darkmodeScript);
+                    })
+                    .catch(err => {
+                        console.error('Failed to load sidebar:', err);
+                    });
+            });
+            </script>
+        </aside>
+        <div class="sidebar-overlay"></div>
+        <main class="main-content">
+            <div class="top-bar">
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div class="user-menu">
+                    <a href="notifications.html" class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">0</span>
+                    </a>
+                    <div class="user-profile" id="userProfile">
+                        <div class="avatar"><i class="fas fa-user"></i></div>
+                        <span id="user-displayname">Loading...</span>
+                        <div class="dropdown-menu" id="userDropdown">
+                            <a href="#"><i class="fas fa-user-circle"></i> My Profile</a>
+                            <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="trial-banner-container"></div>
+            <div class="profile-card">
+                <div class="profile-title" data-translate="subscription_management_header">Subscription Management</div>
+                <div class="profile-subtitle" data-translate="subscription_management_subtitle">View and manage your subscription, billing, and plan details.</div>
+                <div class="profile-tabs">
+                    <button class="profile-tab active" data-section="overview" data-translate="overview_tab">Overview</button>
+                    <button class="profile-tab" data-section="billing" data-translate="billing_tab">Billing</button>
+                    <button class="profile-tab" data-section="plan" data-translate="plan_tab">Plan</button>
+                    <button class="profile-tab" data-section="history" data-translate="history_tab">History</button>
+                    <button class="profile-tab danger" data-section="cancel"><i class="fas fa-trash"></i> <span data-translate="cancel_subscription_button">Cancel Subscription</span></button>
+                </div>
+                <div class="profile-section active" id="section-overview">
+                    <ul class="subscription-list">
+                        <li><span class="label" data-translate="current_plan_label">Current Plan</span><span class="value" id="overview-current-plan">-</span></li>
+                        <li><span class="label" data-translate="status_label">Status</span><span class="value" id="overview-status">-</span></li>
+                        <li><span class="label" data-translate="next_billing_date_label">Next Billing Date</span><span class="value" id="overview-next-billing">-</span></li>
+                        <li><span class="label" data-translate="preferred_billing_date_label">Preferred Billing Date</span><span class="value" id="overview-preferred-billing">-</span></li>
+                        <li><span class="label" data-translate="warning_date_label">Warning Date</span><span class="value" id="overview-warning-date">-</span></li>
+                        <li><span class="label" data-translate="billing_number_card_label">Billing Number / Card</span><span class="value" id="overview-billing-number">-</span></li>
+                        <li><span class="label" data-translate="payment_method_label">Payment Method</span><span class="value" id="overview-payment-method">-</span></li>
+                    </ul>
+                </div>
+                <div class="profile-section" id="section-billing">
+                    <form class="billing-form" id="billing-form">
+                        <label for="billing-date" data-translate="preferred_billing_date_label">Preferred Billing Date</label>
+                        <input type="date" id="billing-date" name="billing-date" />
+                        <label for="warning-date" data-translate="warning_date_before_expiry_label">Warning Date (before expiry)</label>
+                        <input type="date" id="warning-date" name="warning-date" />
+                        <label for="billing-number" data-translate="billing_number_card_label">Billing Number / Card</label>
+                        <input type="text" id="billing-number" name="billing-number" data-translate-placeholder="billing_number_placeholder" placeholder="Card or Billing Number" />
+                        <label for="payment-method" data-translate="payment_method_label">Payment Method</label>
+                        <select id="payment-method" name="payment-method">
+                            <option value="" data-translate="select_method_option">Select a method</option>
+                            <option value="mpesa" data-translate="mpesa_option">M-Pesa</option>
+                            <option value="emola" data-translate="emola_option">E-mola</option>
+                            <option value="bank" data-translate="bank_option">Bank Transfer</option>
+                            <option value="card" data-translate="card_option">Credit/Debit Card</option>
+                        </select>
+                        <div class="form-actions">
+                            <button type="submit" class="profile-tab active" data-translate="save_changes_button">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="profile-section" id="section-plan">
+                    <div style="margin-bottom:1.5rem; display:flex; align-items:center; gap:2em; flex-wrap:wrap;">
+                        <div style="display:flex; align-items:center; gap:0.5em;">
+                            <strong data-translate="current_plan_label_strong">Current Plan:</strong>
+                            <span id="plan-current">-</span>
+                            <span id="plan-current-price" style="color:#2563eb; font-weight:600; margin-left:0.5em;">-</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.5em;">
+                            <strong data-translate="status_label_strong">Status:</strong>
+                            <span id="plan-status">-</span>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="profile-tab" id="upgrade-pay-btn" style="margin-right:1rem;" data-log-action="upgrade_pay">
+                            <i class="fas fa-arrow-up"></i> <span data-translate="upgrade_pay_button">Upgrade / Pay</span>
+                        </button>
+                        <button class="profile-tab" id="downgrade-btn" data-translate="downgrade_plan_button" data-log-action="downgrade_plan">Downgrade Plan</button>
+                    </div>
+                </div>
+                <div class="profile-section" id="section-history">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th data-translate="plan_col_header">Plan</th>
+                                <th data-translate="status_col_header">Status</th>
+                                <th data-translate="start_date_col_header">Start Date</th>
+                                <th data-translate="end_date_col_header">End Date</th>
+                                <th data-translate="payment_method_col_header">Payment Method</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <tr><td colspan="5" style="text-align:center; color:#64748b;" data-translate="no_history_found_text">No history found.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="profile-section cancel-section" id="section-cancel">
+                    <h3 data-translate="cancel_subscription_header">Cancel Subscription</h3>
+                    <p data-translate="cancel_subscription_warning">Are you sure you want to cancel your subscription? This action cannot be undone.</p>
+                    <button class="danger" id="cancel-subscription-btn" data-log-action="cancel_subscription"><i class="fas fa-trash"></i> <span data-translate="confirm_cancel_button">Confirm Cancel</span></button>
+                </div>
+                <div id="cancel-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 data-translate="confirm_cancellation_modal_title">Confirm Cancellation</h2>
+                            <button class="close-modal" id="close-cancel-modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p data-translate="cancel_subscription_warning">Are you sure you want to cancel your subscription? This action cannot be undone.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="profile-tab" id="cancel-modal-no" data-translate="no_button">No</button>
+                            <button class="profile-tab danger" id="cancel-modal-yes" data-translate="yes_cancel_button">Yes, Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="services/languageManager.js"></script>
+    <script src="js/notification-badge.js"></script>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/+esm';
+        const supabaseUrl = 'https://qvmtozjvjflygbkjecyj.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2bXRvemp2amZseWdia2plY3lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMjc2MjMsImV4cCI6MjA2MTcwMzYyM30.DJMC1eM5_EouM1oc07JaoXsMX_bSLn2AVCozAcdfHmo';
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        window.supabase = supabase;
+
+        function capitalizePlanName(plan) {
+            if (!plan) return '';
+            return plan.charAt(0).toUpperCase() + plan.slice(1).toLowerCase();
+        }
+
+        function getPlanDisplayName(plan) {
+            if (!plan) return '-';
+            const planMap = {
+                trial: { en: 'Trial', pt: 'Teste' },
+                basic: { en: 'Basic', pt: 'Básico' },
+                standard: { en: 'Standard', pt: 'Padrão' }
+            };
+            const lang = (localStorage.getItem('preferredLanguage') || 'pt');
+            return planMap[plan] ? planMap[plan][lang] : capitalizePlanName(plan);
+        }
+
+        function logAction(type, desc, details) {
+          if (window.logUserAction) window.logUserAction(type, desc, details);
+        }
+
+        // Handle username display
+        async function updateUsername() {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session && session.user) {
+                    let displayName = session.user.email;
+                    try {
+                        const { data: userRecord } = await supabase
+                            .from('users')
+                            .select('username')
+                            .eq('id', session.user.id)
+                            .maybeSingle();
+                        if (userRecord && userRecord.username) {
+                            displayName = userRecord.username;
+                        }
+                    } catch (e) {
+                        console.log('Error fetching username:', e);
+                    }
+                    const userSpan = document.getElementById('user-displayname');
+                    if (userSpan) userSpan.textContent = displayName;
+                }
+            } catch (e) {
+                console.log('Error updating username:', e);
+            }
+        }
+
+        async function fetchAndDisplaySubscription() {
+            // Elements for Overview section
+            const planEl = document.getElementById('overview-current-plan');
+            const statusEl = document.getElementById('overview-status');
+            const nextBillingEl = document.getElementById('overview-next-billing');
+            const paymentMethodEl = document.getElementById('overview-payment-method');
+            // Elements for Plan section
+            const planCurrentEl = document.getElementById('plan-current');
+            const planCurrentPriceEl = document.getElementById('plan-current-price');
+            const planSectionStatusEl = document.getElementById('plan-status');
+            // Set loading state
+            planEl.textContent = statusEl.textContent = nextBillingEl.textContent = paymentMethodEl.textContent = '...';
+            if (planCurrentEl) planCurrentEl.textContent = '...';
+            if (planCurrentPriceEl) planCurrentPriceEl.textContent = '...';
+            if (planSectionStatusEl) planSectionStatusEl.textContent = '...';
+            try {
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                if (sessionError || !session || !session.user) {
+                    planEl.textContent = statusEl.textContent = nextBillingEl.textContent = paymentMethodEl.textContent = '-';
+                    if (planCurrentEl) planCurrentEl.textContent = '-';
+                    if (planCurrentPriceEl) planCurrentPriceEl.textContent = '-';
+                    if (planSectionStatusEl) planSectionStatusEl.textContent = '-';
+                    return;
+                }
+                const userId = session.user.id;
+                const { data: subscriptions, error: subError } = await supabase
+                    .from('subscriptions')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .order('end_date', { ascending: false });
+                let planKey = 'trial';
+                let planStatus = 'Trial';
+                let planPrice = '';
+                if (subError || !subscriptions || subscriptions.length === 0) {
+                    planKey = 'trial';
+                    planStatus = 'Trial';
+                    planEl.textContent = getPlanDisplayName(planKey);
+                    statusEl.textContent = capitalizePlanName(planStatus);
+                    nextBillingEl.textContent = '-';
+                    paymentMethodEl.textContent = '-';
+                    const warningDateEl = document.getElementById('overview-warning-date');
+                    if (warningDateEl) warningDateEl.textContent = '-';
+                } else {
+                    const latest = subscriptions[0];
+                    planKey = latest.plan ? latest.plan.toLowerCase() : 'trial';
+                    planStatus = latest.status ? capitalizePlanName(latest.status) : '-';
+                    planEl.textContent = getPlanDisplayName(planKey);
+                    statusEl.textContent = capitalizePlanName(latest.status);
+                    // Set warning date to 3 days before end_date
+                    const warningDateEl = document.getElementById('overview-warning-date');
+                    if (latest.end_date && warningDateEl) {
+                        const endDate = new Date(latest.end_date);
+                        endDate.setDate(endDate.getDate() - 3);
+                        // Format as YYYY-MM-DD
+                        const warningDateStr = endDate.getFullYear() + '-' + String(endDate.getMonth() + 1).padStart(2, '0') + '-' + String(endDate.getDate()).padStart(2, '0');
+                        warningDateEl.textContent = warningDateStr;
+                        console.log('[DEBUG] Set warning date to:', warningDateStr, 'from end_date:', latest.end_date);
+                    } else if (warningDateEl) {
+                        warningDateEl.textContent = '-';
+                        console.log('[DEBUG] No end_date found for warning date.');
+                    }
+                
+                // Handle next billing date with overdue check
+                if (latest.end_date) {
+                    const endDate = new Date(latest.end_date);
+                    const today = new Date();
+                    
+                    // Extract just the date part from the original string to avoid timezone conversion issues
+                    const endDateStr = latest.end_date.split('T')[0]; // "2025-07-05"
+                    // Use local date instead of UTC to get the correct today's date
+                    const todayStr = today.getFullYear() + '-' + 
+                                   String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                                   String(today.getDate()).padStart(2, '0'); // "2025-07-06"
+                    
+                    console.log('=== DATE DEBUG INFO ===');
+                    console.log('Current date/time (local):', new Date().toString());
+                    console.log('Current date/time (UTC):', new Date().toISOString());
+                    console.log('End date (original):', latest.end_date);
+                    console.log('End date (parsed):', endDate);
+                    console.log('End date string:', endDateStr);
+                    console.log('Today string:', todayStr);
+                    console.log('Is overdue:', endDateStr < todayStr);
+                    console.log('=== END DEBUG INFO ===');
+                    
+                    if (endDateStr < todayStr) {
+                        // Subscription is overdue
+                        nextBillingEl.innerHTML = `<span class="overdue-indicator">OVERDUE</span>${endDateStr}`;
+                        nextBillingEl.classList.add('overdue');
+                        // Send notification and email for subscription expired
+                        if (window.createNotification) {
+                            await window.createNotification(
+                                'subscription_expired',
+                                'Subscription Expired',
+                                `Your subscription expired on ${endDateStr}. Please renew to restore access to our services.`,
+                                'profile.html',
+                                userId
+                            );
+                        }
+                        console.log('Set overdue styling');
+                    } else {
+                        nextBillingEl.textContent = endDateStr;
+                        nextBillingEl.classList.remove('overdue');
+                        console.log('Set normal styling');
+                    }
+                } else {
+                    nextBillingEl.textContent = '-';
+                    nextBillingEl.classList.remove('overdue');
+                    console.log('No end date');
+                }
+                
+                paymentMethodEl.textContent = latest.payment_method || '-';
+                }
+                // Set plan price using translation keys
+                const t = key => (window.languageManager && typeof window.languageManager.translate === 'function') ? window.languageManager.translate(key) : key;
+                planPrice = t(planKey + '_plan_price');
+                // Set Plan section values
+                if (planCurrentEl) planCurrentEl.textContent = t(planKey + '_plan_name');
+                if (planCurrentPriceEl) planCurrentPriceEl.textContent = planPrice;
+                if (planSectionStatusEl) planSectionStatusEl.textContent = planStatus;
+            } catch (err) {
+                planEl.textContent = statusEl.textContent = nextBillingEl.textContent = paymentMethodEl.textContent = '-';
+                if (planCurrentEl) planCurrentEl.textContent = '-';
+                if (planCurrentPriceEl) planCurrentPriceEl.textContent = '-';
+                if (planSectionStatusEl) planSectionStatusEl.textContent = '-';
+            }
+        }
+
+        // --- Plan Change Modal Logic ---
+        function showPlanChangeModal(currentPlanKey) {
+            const t = key => (window.languageManager && typeof window.languageManager.translate === 'function') ? window.languageManager.translate(key) : key;
+            const plans = [
+                {
+                    key: 'basic',
+                    name: t('basic_plan_name'),
+                    price: t('basic_plan_price'),
+                    features: t('basic_plan_features')
+                },
+                {
+                    key: 'standard',
+                    name: t('standard_plan_name'),
+                    price: t('standard_plan_price'),
+                    features: t('standard_plan_features')
+                }
+            ];
+            // Remove any existing modal overlays first (prevent duplicates)
+            document.querySelectorAll('.plan-modal-overlay').forEach(el => el.remove());
+            const modal = document.createElement('div');
+            modal.className = 'plan-modal-overlay';
+            modal.innerHTML = `
+              <div class="plan-modal">
+                <h2>
+                  ${t('choose_plan_modal_title')}
+                </h2>
+                <div style="margin-bottom:1em;"><strong>${t('current_plan_label_modal')}:</strong> ${t(currentPlanKey + '_plan_name')} (${t(currentPlanKey + '_plan_price')})</div>
+                <div style="margin-bottom:1em;">${t('choose_new_plan_label')}</div>
+                ${plans.map(plan => `
+                  <div style="margin-bottom:1em;">
+                    <strong>${plan.name}</strong> (${plan.price})<br>
+                    <span>${plan.features}</span><br>
+                    <button class="select-plan-btn profile-tab" data-plan="${plan.key}" ${plan.key === currentPlanKey ? 'disabled' : ''}>
+                      ${t('select_' + plan.key + '_button')}
+                    </button>
+                  </div>
+                `).join('')}
+                <button class="cancel-plan-modal profile-tab danger" style="margin-top:1em;">${t('cancel_button')}</button>
+              </div>
+            `;
+            Object.assign(modal.style, {position:'fixed',top:0,left:0,width:'100vw',height:'100vh',background:'rgba(0,0,0,0.25)',zIndex:10000,display:'flex',alignItems:'center',justifyContent:'center'});
+            document.body.appendChild(modal);
+            modal.querySelectorAll('.select-plan-btn').forEach(btn => {
+                btn.onclick = async () => {
+                    const newPlan = btn.getAttribute('data-plan');
+                    await changePlan(newPlan, modal);
+                };
+            });
+            modal.querySelector('.cancel-plan-modal').onclick = () => modal.remove();
+        }
+
+        // --- Plan Change Logic ---
+        async function changePlan(newPlan, modal) {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session || !session.user) return;
+                const userId = session.user.id;
+                const { data: subscriptions } = await supabase
+                    .from('subscriptions')
+                    .select('id')
+                    .eq('user_id', userId)
+                    .order('end_date', { ascending: false });
+                if (!subscriptions || subscriptions.length === 0) return;
+                const latestId = subscriptions[0].id;
+                // Set new start_date/end_date for new plan
+                const now = new Date();
+                const endDate = new Date(now);
+                endDate.setMonth(endDate.getMonth() + 1);
+                // Get plan config for maxUsers, etc.
+                const PLAN_CONFIG = {
+                    basic: { price: 'MZN 250/mo', maxUsers: 2 },
+                    standard: { price: 'MZN 500/mo', maxUsers: 5 }
+                };
+                // Build the update payload
+                const updatePayload = {
+                    plan: newPlan,
+                    status: 'active',
+                    start_date: now.toISOString(),
+                    end_date: endDate.toISOString(),
+                    max_users: PLAN_CONFIG[newPlan].maxUsers
+                };
+                console.log('[DEBUG] Subscribing to plan. Payload:', updatePayload);
+                const { error, data, status } = await supabase
+                    .from('subscriptions')
+                    .update(updatePayload)
+                    .eq('id', latestId);
+                console.log('[DEBUG] Supabase update response:', { error, data, status });
+                if (!error) {
+                    alert((window.languageManager ? window.languageManager.translate('settings_updated_successfully') : 'Plan changed!'));
+                    if (modal) modal.remove();
+                    fetchAndDisplaySubscription();
+                    updatePlanSectionUI(newPlan);
+                    logAction('change_plan', `Changed plan to: ${newPlan}`);
+                } else {
+                    alert((window.languageManager ? window.languageManager.translate('failed_to_update_settings') : 'Failed to change plan.'));
+                    // Log error details for debugging
+                    console.error('[ERROR] Failed to update subscription:', error, updatePayload);
+                }
+            } catch (err) {
+                alert('Error changing plan.');
+                console.error('[ERROR] Exception in changePlan:', err);
+            }
+        }
+
+        // --- Update Plan Section UI ---
+        function updatePlanSectionUI(planKey) {
+            const t = key => (window.languageManager && typeof window.languageManager.translate === 'function') ? window.languageManager.translate(key) : key;
+            const planName = t(planKey + '_plan_name');
+            const planPrice = t(planKey + '_plan_price');
+            const planEl = document.getElementById('plan-current');
+            const priceEl = document.getElementById('plan-current-price');
+            if (planEl) planEl.textContent = planName;
+            if (priceEl) priceEl.textContent = planPrice;
+        }
+
+        // Set plan section UI
+        fetchAndDisplaySubscription().then(() => {
+            // Try to get plan from overview section
+            const planText = document.getElementById('overview-current-plan')?.textContent?.toLowerCase();
+            const statusText = document.getElementById('overview-status')?.textContent;
+            if (planText === 'basic' || planText === 'standard') {
+                setPlanSection(planText, statusText);
+            }
+        });
+
+        // --- Subscription History (Historico) Section ---
+        async function fetchAndDisplaySubscriptionHistory() {
+            const tbody = document.getElementById('history-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">Loading...</td></tr>`;
+            try {
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                if (sessionError || !session || !session.user) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No history found.</td></tr>`;
+                    return;
+                }
+                const userId = session.user.id;
+                const { data: history, error } = await supabase
+                    .from('subscription_history')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .order('created_at', { ascending: false });
+                if (error || !history || history.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No history found.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = '';
+                for (const record of history) {
+                    const plan = record.plan ? getPlanDisplayName(record.plan) : '-';
+                    const status = record.status ? capitalizePlanName(record.status) : '-';
+                    const startDate = record.start_date ? record.start_date.split('T')[0] : '-';
+                    const endDate = record.end_date ? record.end_date.split('T')[0] : '-';
+                    const paymentMethod = record.payment_method || '-';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${plan}</td>
+                            <td>${status}</td>
+                            <td>${startDate}</td>
+                            <td>${endDate}</td>
+                            <td>${paymentMethod}</td>
+                        </tr>
+                    `;
+                }
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No history found.</td></tr>`;
+            }
+        }
+        // Call this when DOM is loaded
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Update username first
+            await updateUsername();
+            
+            // Then fetch and display subscription
+            fetchAndDisplaySubscription();
+
+            // Billing form submit
+            const billingForm = document.getElementById('billing-form');
+            if (billingForm) {
+                billingForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const warningDate = document.getElementById('warning-date').value;
+                    const billingDate = document.getElementById('billing-date').value;
+                    const billingNumber = document.getElementById('billing-number').value;
+                    const paymentMethod = document.getElementById('payment-method').value;
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session || !session.user) return;
+                    const userId = session.user.id;
+                    // Update the latest subscription row
+                    const { data: subscriptions } = await supabase
+                        .from('subscriptions')
+                        .select('id')
+                        .eq('user_id', userId)
+                        .order('end_date', { ascending: false });
+                    if (!subscriptions || subscriptions.length === 0) return;
+                    const latestId = subscriptions[0].id;
+                    const { error } = await supabase
+                        .from('subscriptions')
+                        .update({
+                            warning_date: warningDate || null,
+                            preferred_billing_date: billingDate || null,
+                            billing_number: billingNumber || null,
+                            payment_method: paymentMethod || null
+                        })
+                        .eq('id', latestId);
+                    if (!error) {
+                        alert('Subscription updated!');
+                        fetchAndDisplaySubscription();
+                        logAction('save_billing', 'Saved billing info', { warningDate, billingDate, billingNumber, paymentMethod });
+                    } else {
+                        alert('Failed to update subscription.');
+                    }
+                });
+            }
+
+            // Tab switching logic for filter buttons
+            const filterBtns = document.querySelectorAll('.profile-tab');
+            const sections = document.querySelectorAll('.profile-section');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const section = btn.dataset.section;
+                    sections.forEach(sec => sec.classList.remove('active'));
+                    if (section) {
+                        document.getElementById('section-' + section).classList.add('active');
+                    }
+                });
+            });
+
+            // Cancel Subscription Modal Logic
+            const cancelBtn = document.getElementById('cancel-subscription-btn');
+            const cancelModal = document.getElementById('cancel-modal');
+            const closeCancelModal = document.getElementById('close-cancel-modal');
+            const cancelModalNo = document.getElementById('cancel-modal-no');
+            const cancelModalYes = document.getElementById('cancel-modal-yes');
+
+            function showCancelModal() {
+                cancelModal.classList.add('show');
+            }
+            function hideCancelModal() {
+                cancelModal.classList.remove('show');
+            }
+            if (cancelBtn) cancelBtn.addEventListener('click', showCancelModal);
+            if (closeCancelModal) closeCancelModal.addEventListener('click', hideCancelModal);
+            if (cancelModalNo) cancelModalNo.addEventListener('click', hideCancelModal);
+            if (cancelModalYes) cancelModalYes.addEventListener('click', async function() {
+                // Actually cancel the subscription in Supabase
+                try {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session || !session.user) return;
+                    const userId = session.user.id;
+                    const { data: subscriptions } = await supabase
+                        .from('subscriptions')
+                        .select('id')
+                        .eq('user_id', userId)
+                        .order('end_date', { ascending: false });
+                    if (!subscriptions || subscriptions.length === 0) return;
+                    const latestId = subscriptions[0].id;
+                    const { error } = await supabase
+                        .from('subscriptions')
+                        .update({ status: 'canceled' })
+                        .eq('id', latestId);
+                    if (!error) {
+                        alert('Subscription canceled.');
+                        // Send notification and email for cancellation
+                        if (window.createNotification) {
+                            await window.createNotification(
+                                'subscription_canceled',
+                                'Subscription Canceled',
+                                'Your subscription has been canceled. Please renew to restore access to our services.',
+                                'profile.html',
+                                userId
+                            );
+                        }
+                        hideCancelModal();
+                        fetchAndDisplaySubscription();
+                        logAction('cancel_subscription', 'Canceled subscription');
+                    } else {
+                        alert('Failed to cancel subscription.');
+                    }
+                } catch (err) {
+                    alert('Error canceling subscription.');
+                }
+            });
+
+            // --- Plan Section Logic ---
+            const upgradeBtn = document.getElementById('upgrade-pay-btn');
+            const downgradeBtn = document.getElementById('downgrade-btn');
+            function setPlanSection(planKey, status) {
+                const t = key => (window.languageManager && typeof window.languageManager.translate === 'function') ? window.languageManager.translate(key) : key;
+                if (planCurrentEl) planCurrentEl.textContent = t(planKey + '_plan_name');
+                if (planCurrentPriceEl) planCurrentPriceEl.textContent = t(planKey + '_plan_price');
+                if (planSectionStatusEl) planSectionStatusEl.textContent = status ? status : '-';
+            }
+            // After fetchAndDisplaySubscription() call, add:
+            fetchAndDisplaySubscription().then(() => {
+                // Try to get plan from overview section
+                const planText = document.getElementById('overview-current-plan')?.textContent?.toLowerCase();
+                const statusText = document.getElementById('overview-status')?.textContent;
+                if (planText === 'basic' || planText === 'standard') {
+                    setPlanSection(planText, statusText);
+                }
+            });
+            // Hook up upgrade/downgrade buttons
+            if (upgradeBtn) upgradeBtn.onclick = () => {
+                const planText = document.getElementById('overview-current-plan')?.textContent?.toLowerCase();
+                showPlanChangeModal(planText === 'basic' || planText === 'standard' ? planText : 'basic');
+            };
+            if (downgradeBtn) downgradeBtn.onclick = () => {
+                const planText = document.getElementById('overview-current-plan')?.textContent?.toLowerCase();
+                showPlanChangeModal(planText === 'basic' || planText === 'standard' ? planText : 'standard');
+            };
+            // Fetch and display history when the history tab is clicked
+            const historyFilterBtn = document.querySelector('.profile-tab[data-section="history"]');
+            if (historyFilterBtn) {
+                historyFilterBtn.addEventListener('click', fetchAndDisplaySubscriptionHistory);
+            }
+        });
+    </script>
+    <script>
+        // Initialize the language manager with the correct base path
+        window.languageManager = new LanguageManager('./');
+  
+        // Initialize the language manager
+        document.addEventListener('DOMContentLoaded', async function() {
+          if (window.languageManager) {
+            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'pt';
+            await window.languageManager.setLanguage(preferredLanguage);
+          }
+        });
+      </script>
+      <script type="module">
+        import { logUserAction } from './js/logUserAction.js';
+        window.logUserAction = logUserAction;
+        document.addEventListener('DOMContentLoaded', () => {
+          logUserAction('page_visit', 'User visited page: profile.html');
+        });
+      </script>
+      <script src="js/topbar-menu.js"></script>
+      <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const userProfile = document.getElementById('userProfile');
+  const userDropdown = document.getElementById('userDropdown');
+  if (!userProfile || !userDropdown) return;
+
+  let dropdownHover = false;
+
+  // Desktop: open on hover (profile or dropdown)
+  function openDropdown() {
+    if (window.innerWidth > 768) userProfile.classList.add('open');
+  }
+  function closeDropdown() {
+    if (window.innerWidth > 768 && !dropdownHover) userProfile.classList.remove('open');
+  }
+  userProfile.addEventListener('mouseenter', openDropdown);
+  userProfile.addEventListener('mouseleave', () => setTimeout(closeDropdown, 50));
+  userDropdown.addEventListener('mouseenter', function() {
+    dropdownHover = true;
+    if (window.innerWidth > 768) userProfile.classList.add('open');
+  });
+  userDropdown.addEventListener('mouseleave', function() {
+    dropdownHover = false;
+    setTimeout(closeDropdown, 50);
+  });
+
+  // Mobile: open/close on click
+  userProfile.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768) {
+      e.stopPropagation();
+      userProfile.classList.toggle('open');
+    }
+  });
+
+  // Close dropdown when clicking outside (mobile)
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768 && !userProfile.contains(e.target)) {
+      userProfile.classList.remove('open');
+    }
+  });
+
+  // Close dropdown on resize if switching between desktop/mobile
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) userProfile.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>

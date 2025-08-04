@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-translate="product_management_title">Product Management | WALAKA</title>
+
+  <script>
+      // Set base path for assets to handle GitHub Pages sub-directory
+      const repoName = 'Walaka';
+      const isGitHubPages = window.location.hostname.includes('github.io');
+      const basePath = isGitHubPages ? `/${repoName}/` : '/';
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+
+  <script>
+      document.write(`<link rel="stylesheet" href="${basePath}css/upgrade-modal.css">`);
+      document.write(`<link rel="stylesheet" href="${basePath}components/trial-banner.css">`);
+      document.write(`<link rel="stylesheet" href="${basePath}components/trial-restrictions.css">`);
+      document.write(`<link rel="stylesheet" href="${basePath}components/sidebar.css">`);
+      document.write(`<link rel="stylesheet" href="${basePath}css/styles.css">`);
+      document.write(`<link rel="stylesheet" href="${basePath}css/hints.css">`);
+  </script>
+
+  <!-- Hints System -->
+  <script src="js/hints/walaka-hints.js"></script>
+  <script src="js/hints/page-hints.js"></script>
+
+  <link rel="icon" type="image/png" href="assets/images/walaka-assistant.PNG">
+  
+  
+  
+  
+  <style>
+/* ===== VARIABLES ===== 
+:root {
+  --primary-color: #007ec7;
+  --primary-dark: #005fa3;
+  --primary-light: #e6f4fb;
+  --secondary-color: #4f46e5;
+  --secondary-light: #818cf8;
+  --accent-color: #3b82f6;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-light: #94a3b8;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --danger-light: #fee2e2;
+  --background-color: #f8fafc;
+  --card-background: #ffffff;
+  --border-color: #e2e8f0;
+  --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --box-shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --card-radius: 12px;
+  --input-radius: 8px;
+  --transition-speed: 0.2s;
+}
+
+/* ===== RESET & BASE STYLES ===== 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--background-color);
+  color: #333;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ===== LAYOUT ===== 
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard-container.sidebar-collapsed {
+  grid-template-columns: var(--sidebar-collapsed-width) -1fr;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--transition-speed) ease;
+  width: calc(100% - var(--sidebar-width));
+}
+
+.sidebar-collapsed .main-container {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+.content-wrapper {
+  flex: 1;
+  padding: 2rem;
+  margin-top: var(--topbar-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .content-wrapper {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .content-wrapper {
+    padding: 1rem;
+  }
+  
+  .container {
+    padding: 0 0.5rem;
+  }
+}
+
+.content-wrapper {
+  flex: 1;
+  padding: 2rem;
+  margin-top: var(--topbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 1.5rem;
+  margin-top: var(--topbar-height);
+  background-color: var(--background-color);
+}
+
+/* Top Bar */
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    height: var(--topbar-height);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    box-shadow: var(--box-shadow);
+    z-index: 99;
+}
+
+.top-bar .search-bar {
+    flex: 1;
+    max-width: 400px;
+    margin-right: 1rem;
+}
+
+.top-bar .search-bar input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: var(--card-radius);
+    font-size: 0.9rem;
+    background-color: #f5f5f5;
+}
+
+.top-bar .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.top-bar .notification-bell {
+    position: relative;
+    cursor: pointer;
+}
+
+.top-bar .notification-bell i {
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.top-bar .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--primary-color);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+/* --- Top Bar Dropdown Fix --- */
+.top-bar .user-profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.top-bar .dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    z-index: 1000;
+    right: 0;
+    top: 110%;
+    min-width: 180px;
+    animation: fadeIn 0.2s;
+}
+
+.top-bar .user-profile.open .dropdown-menu {
+    display: block;
+}
+
+.top-bar .dropdown-menu a {
+    color: #333;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    display: block;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.top-bar .dropdown-menu a:hover {
+    background-color: #f0f0f0;
+}
+
+
+/* ===== PAGE HEADER ===== 
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 1400px;
+}
+
+.page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ===== BUTTONS ===== */
+.primary-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--input-radius);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.primary-btn:hover {
+  background-color: var(--primary-dark);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.secondary-btn {
+  background-color: white;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--input-radius);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.secondary-btn:hover {
+  background-color: var(--primary-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.danger-btn {
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--input-radius);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.danger-btn:hover {
+  background-color: #dc2626;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  padding: 0.5rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.link-btn:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* Update Product Management Styles */
+.product-management {
+  display: flex;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  align-items: stretch;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.frame {
+  background: var(--card-background);
+  border-radius: var(--card-radius);
+  box-shadow: var(--box-shadow);
+  transition: box-shadow var(--transition-speed) ease;
+}
+
+.frame:hover {
+  box-shadow: var(--box-shadow-hover);
+}
+
+.frame-left {
+  width: 400px;
+  max-height: 90vh;
+  height: 100%;
+  position: sticky;
+  top: 80px;
+  padding: 1.5rem;
+}
+
+body .frame-right {
+  flex: 1;
+  min-height: 600px;
+  max-height: 90vh;
+  height: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+@media (max-width: 1200px) {
+  body .frame-right {
+    max-width: 100% !important;
+  }
+}
+
+/* ===== FORM STYLES ===== */
+#product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 0.95rem;
+  transition: all var(--transition-speed) ease;
+  color: var(--text-primary);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 126, 199, 0.1);
+  outline: none;
+}
+
+.form-group input::placeholder {
+  color: var(--text-light);
+}
+
+/* ===== BUTTON STYLES ===== */
+.btn-primary,
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--input-radius);
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all var(--transition-speed) ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--background-color);
+  border-color: var(--text-secondary);
+}
+
+/* ===== FILTERS AND VIEW TOGGLE ===== */
+.product-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filter-group select,
+.filter-group input {
+  min-width: 150px;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background-color: white;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.view-toggle button {
+  padding: 0.6rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  background: white;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.view-toggle button.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* ===== PRODUCT LIST STYLES ===== */
+.product-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.product-list.grid-view {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.product-list.list-view {
+  grid-template-columns: 1fr;
+}
+
+.product-item {
+  background: white;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  transition: all var(--transition-speed) ease;
+}
+
+.product-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--box-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.product-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.product-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.product-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  padding: 0.5rem;
+  border: none;
+  border-radius: var(--input-radius);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.edit-btn {
+  background-color: var(--warning-color);
+}
+
+.edit-btn:hover {
+  background-color: #f59e0b;
+}
+
+.delete-btn {
+  background-color: var(--danger-color);
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--text-secondary);
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--text-light);
+}
+
+.empty-state h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* ===== ANIMATIONS AND TRANSITIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-10px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.product-item {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.product-meta {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* ===== ENHANCED FORM STYLES ===== */
+.form-group .required {
+  color: var(--danger-color);
+  margin-left: 2px;
+}
+
+.form-group input:focus::placeholder,
+.form-group select:focus::placeholder {
+  opacity: 0.5;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.form-actions button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.form-actions button i {
+  font-size: 0.9rem;
+}
+
+/* ===== IMPROVED FILTER STYLES ===== */
+.filter-group input,
+.filter-group select {
+  background-color: white;
+  transition: all var(--transition-speed) ease;
+}
+
+.filter-group input:hover,
+.filter-group select:hover {
+  border-color: var(--text-secondary);
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 126, 199, 0.1);
+  outline: none;
+}
+
+.search-input {
+  padding-left: 2.5rem !important;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2364748b"><path d="M21.71 20.29l-5.01-5.01C17.54 13.68 18 11.91 18 10c0-4.41-3.59-8-8-8S2 5.59 2 10s3.59 8 8 8c1.91 0 3.68-.46 5.28-1.3l5.01 5.01c.39.39 1.02.39 1.41 0l1.41-1.41c.39-.39.39-1.02 0-1.41zM10 16c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>');
+  background-position: 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
+
+/* ===== IMPROVED VIEW TOGGLE ===== */
+.view-toggle button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.view-toggle button:hover {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ===== LOADING STATE ===== */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  border: 3px solid var(--border-color);
+  border-radius: 50%;
+  border-top: 3px solid var(--primary-color);
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin-right: 1rem;
+}
+
+/* ===== NOTIFICATION STYLES ===== */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: var(--card-radius);
+  background: white;
+  box-shadow: var(--box-shadow-hover);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transform: translateX(120%);
+  transition: transform var(--transition-speed) ease;
+  z-index: 1000;
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.notification.success {
+  border-left: 4px solid var(--success-color);
+}
+
+.notification.error {
+  border-left: 4px solid var(--danger-color);
+}
+
+.notification i {
+  font-size: 1.25rem;
+}
+
+.notification.success i {
+  color: var(--success-color);
+}
+
+.notification.error i {
+  color: var(--danger-color);
+}
+
+/* ===== DISABLED STATE STYLES ===== */
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  transform: none;
+}
+
+/* ===== CONFIRMATION DIALOG STYLES ===== */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: white;
+  border-radius: var(--card-radius);
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 90%;
+}
+
+.dialog-header {
+  margin-bottom: 1rem;
+}
+
+.dialog-header h3 {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+
+.dialog-content {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+/* ===== ENHANCE FOCUS STYLES ===== */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ===== MODAL STYLES ===== */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.4);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: #fff;
+  margin: auto;
+  border-radius: var(--card-radius);
+  padding: 0;
+  max-width: 400px;
+  width: 90vw;
+  box-shadow: var(--box-shadow-hover);
+  animation: fadeIn 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0 0.5rem;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 1.25rem 1.5rem;
+  color: var(--text-secondary);
+}
+
+.modal-footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem 1.25rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+.main-container {
+  flex: 1 1 0%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+  </style>
+
+  <style>
+[data-theme="dark"] body,
+[data-theme="dark"] .dashboard-container,
+[data-theme="dark"] .main-container,
+[data-theme="dark"] .content-wrapper,
+[data-theme="dark"] .product-management,
+[data-theme="dark"] .frame,
+[data-theme="dark"] .frame-left,
+[data-theme="dark"] .frame-right,
+[data-theme="dark"] .product-list,
+[data-theme="dark"] .product-item,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .top-bar,
+[data-theme="dark"] .page-header,
+[data-theme="dark"] .product-controls,
+[data-theme="dark"] .filter-group,
+[data-theme="dark"] .view-toggle,
+[data-theme="dark"] .pagination,
+[data-theme="dark"] .empty-state,
+[data-theme="dark"] .notification {
+  background: #181a20 !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .frame,
+[data-theme="dark"] .frame-left,
+[data-theme="dark"] .frame-right,
+[data-theme="dark"] .product-item,
+[data-theme="dark"] .modal-content {
+  background: #23262f !important;
+  color: #fff !important;
+  border-color: #2a2d3a !important;
+}
+[data-theme="dark"] .product-title,
+[data-theme="dark"] .page-header h1,
+[data-theme="dark"] .modal-header h3 {
+  color: #60a5fa !important;
+}
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+  background: #181a20 !important;
+  color: #fff !important;
+  border-color: #2a2d3a !important;
+}
+[data-theme="dark"] .btn-primary {
+  background: #2563eb !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .btn-secondary {
+  background: #23262f !important;
+  color: #e5e7eb !important;
+  border: 1px solid #2a2d3a !important;
+}
+[data-theme="dark"] .btn-primary:hover {
+  background: #1e40af !important;
+}
+[data-theme="dark"] .btn-secondary:hover {
+  background: #181a20 !important;
+}
+[data-theme="dark"] .meta-item,
+[data-theme="dark"] .product-meta {
+  color: #60a5fa !important;
+}
+[data-theme="dark"] .product-actions .action-btn {
+  background: #23262f !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .product-actions .action-btn:hover {
+  background: #181a20 !important;
+  color: #60a5fa !important;
+}
+[data-theme="dark"] .filter-group label,
+[data-theme="dark"] .view-toggle button,
+[data-theme="dark"] .pagination-btn {
+  color: #fff !important;
+}
+[data-theme="dark"] .search-input {
+  background: #23262f !important;
+  color: #fff !important;
+  border: 1px solid #2a2d3a !important;
+}
+[data-theme="dark"] .search-input::placeholder {
+  color: #aaa !important;
+}
+[data-theme="dark"] .view-toggle button {
+  background: #23262f !important;
+  color: #fff !important;
+  border: 1px solid #2a2d3a !important;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+[data-theme="dark"] .view-toggle button.active,
+[data-theme="dark"] .view-toggle button:hover {
+  background: #2563eb !important;
+  color: #fff !important;
+  border-color: #2563eb !important;
+}
+[data-theme="dark"] .secondary-btn,
+[data-theme="dark"] .pagination .secondary-btn {
+  background: #23262f !important;
+  color: #fff !important;
+  border: 1px solid #2a2d3a !important;
+}
+[data-theme="dark"] .secondary-btn:hover,
+[data-theme="dark"] .pagination .secondary-btn:hover {
+  background: #181a20 !important;
+  color: #60a5fa !important;
+  border-color: #2563eb !important;
+}
+[data-theme="dark"] .filter-select,
+[data-theme="dark"] select.filter-select {
+  background: #23262f !important;
+  color: #fff !important;
+  border: 1px solid #2a2d3a !important;
+}
+[data-theme="dark"] .filter-select option {
+  background: #23262f !important;
+  color: #aaa !important;
+}
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 12px;
+  background: #23262f;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 6px;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+[data-theme="dark"] ::-webkit-scrollbar-corner {
+  background: #23262f;
+}
+[data-theme="dark"] {
+  scrollbar-color: #444 #23262f;
+  scrollbar-width: thin;
+}
+</style>
+
+</head>
+<body>
+  <script type="module">
+    import { requireAuth } from './auth.js';
+    document.addEventListener('DOMContentLoaded', async () => {
+      try { await requireAuth(); } catch (e) {}
+    });
+  </script>
+  <div class="dashboard-container">
+    <!-- Sidebar Menu -->
+    <div id="sidebar-container"></div>
+    <script>
+    // Dynamically load the sidebar from components/sidebar.html
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch(`${basePath}components/sidebar.html`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('sidebar-container').innerHTML = html;
+                // Dynamically load the sidebar-actions.js script after sidebar is injected
+                var script = document.createElement('script');
+                script.src = `${basePath}components/sidebar-actions.js`;
+                document.body.appendChild(script);
+                // Dynamically load the sidebar-darkmode.js script after sidebar is injected
+                var darkmodeScript = document.createElement('script');
+                darkmodeScript.src = `${basePath}components/sidebar-darkmode.js`;
+                darkmodeScript.onload = function() {
+                    setTimeout(function() {
+                        if (window.initSidebarDarkModeIcon) window.initSidebarDarkModeIcon();
+                    }, 100);
+                };
+                document.body.appendChild(darkmodeScript);
+            })
+            .catch(err => {
+                console.error('Failed to load sidebar:', err);
+            });
+    });
+    </script>
+    <!-- Main Content Area -->
+    <main class="main-container">
+      <header class="top-bar">
+        <div class="hamburger-menu" id="hamburger-menu">
+          <i class="fas fa-bars"></i>
+        </div>
+        <div class="user-menu" style="margin-left:auto;">
+          <a href="notifications.html" class="notification-bell">
+            <i class="fas fa-bell"></i>
+            <span class="badge">0</span>
+          </a>
+          <div class="user-profile" id="userProfile">
+            <div class="avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <span id="user-displayname">Loading...</span>
+            <div class="dropdown-menu" id="userDropdown">
+              <a href="#"><i class="fas fa-user-circle"></i> My Profile</a>
+              <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+              <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Add trial banner and restrictions system -->
+      <div id="trial-banner-container"></div>
+      <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          fetch(`${basePath}components/trial-banner.html`)
+              .then(response => {
+                  if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                  }
+                  return response.text();
+              })
+              .then(html => {
+                  document.getElementById('trial-banner-container').innerHTML = html;
+                  
+                  // Load the banner script
+                  const bannerScript = document.createElement('script');
+                  bannerScript.type = 'module';
+                  bannerScript.src = `${basePath}components/trial-banner.js`;
+                  document.body.appendChild(bannerScript);
+                  
+                  // Load the restrictions script immediately after
+                  const restrictionsScript = document.createElement('script');
+                  restrictionsScript.src = `${basePath}components/trial-restrictions.js`;
+                  document.body.appendChild(restrictionsScript);
+              })
+              .catch(error => {
+                  console.error('Failed to load trial banner component:', error);
+              });
+      });
+      </script>
+
+      <div class="content-wrapper">
+        <div class="container">
+          <div class="page-header" style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1400px;">
+            <h1 data-translate="product_management">Product Management</h1>
+            <div style="margin-left: auto;">
+              <button id="add-new-product-btn" class="primary-btn">
+                <i class="fas fa-plus"></i> <span data-translate="add_new_product">Add New Product</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="product-management">
+            <!-- Product Form Section -->
+            <section class="frame frame-left" id="product-form-container">
+              <h2 id="form-title" data-translate="new_product_form_title">New Product</h2>
+              <form id="product-form">
+                <div class="form-group">
+                  <label for="description" data-translate="description">Description <span class="required">*</span></label>
+                  <input type="text" id="description" required data-translate-placeholder="description_placeholder" placeholder="Enter product description">
+                </div>
+
+                <div class="form-group">
+                  <label for="price" data-translate="price">Price <span class="required">*</span></label>
+                  <input type="number" id="price" step="0.01" required placeholder="0.00">
+                </div>
+
+                <div class="form-group">
+                  <label for="tax-code" data-translate="tax_code_sat">Tax Code (SAT)</label>
+                  <input type="text" id="tax-code" value="101011" data-translate-placeholder="tax_code_placeholder" placeholder="e.g. 10101">
+                </div>
+
+                <div class="form-group">
+                  <label for="vat" data-translate="vat_rate">VAT Rate <span class="required">*</span></label>
+                  <select id="vat" required>
+                    <option value="" data-translate="select_vat_rate">Select VAT rate</option>
+                    <option value="0">0%</option>
+                    <option value="0.16">16%</option>
+                    <option value="other" data-translate="other">Other</option>
+                  </select>
+                </div>
+
+                <div id="other-vat-container" class="form-group" style="display: none;">
+                  <label for="other-vat" data-translate="custom_vat_rate">Custom VAT Rate (%)</label>
+                  <input type="number" id="other-vat" min="0" max="100" step="1">
+                </div>
+
+                <div class="form-group">
+                  <label for="industry" data-translate="industry">Industry <span class="required">*</span></label>
+                  <select id="industry" required>
+                    <option value="" data-translate="loading_industries">Loading industries...</option>
+                  </select>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn-primary" data-translate="save_product">Save Product</button>
+                  <button type="button" class="btn-secondary" id="cancel-btn" data-translate="cancel">Cancel</button>
+                </div>
+              </form>
+            </section>
+
+            <!-- Product List Section -->
+            <section class="frame frame-right">
+              <div class="product-controls">
+                <div class="filter-group">
+                  <input type="text" id="product-search" data-translate-placeholder="search_products_placeholder" placeholder="Search products..." class="search-input">
+                  <select id="industry-filter" class="filter-select">
+                    <option value="all" data-translate="all_industries">All Industries</option>
+                  </select>
+                  <select id="vat-filter" class="filter-select">
+                    <option value="all" data-translate="all_vat_rates">All VAT Rates</option>
+                    <option value="16">16%</option>
+                    <option value="0">0%</option>
+                  </select>
+                </div>
+                <div class="view-toggle">
+                  <button id="grid-view-btn" class="active" data-translate-title="grid_view_title" title="Grid View">
+                    <i class="fas fa-th-large"></i>
+                  </button>
+                  <button id="list-view-btn" data-translate-title="list_view_title" title="List View">
+                    <i class="fas fa-list"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div id="product-list" class="product-list grid-view">
+                <!-- Products will be dynamically inserted here -->
+              </div>
+
+              <div class="pagination">
+                <button id="prev-page" class="secondary-btn">
+                  <i class="fas fa-chevron-left"></i> <span data-translate="previous">Previous</span>
+                </button>
+                <span id="page-info">Page 1 of 1</span>
+                <button id="next-page" class="secondary-btn">
+                  <span data-translate="next">Next</span> <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="delete-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 data-translate="confirm_delete_title">Confirm Delete</h3>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p data-translate="confirm_delete_product_message">Are you sure you want to delete this product? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="confirm-delete-btn" class="danger-btn" data-translate="delete">Delete</button>
+        <button id="cancel-delete-btn" class="secondary-btn" data-translate="cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/+esm';
+
+    const supabaseUrl = 'https://qvmtozjvjflygbkjecyj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2bXRvemp2amZseWdia2plY3lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMjc2MjMsImV4cCI6MjA2MTcwMzYyM30.DJMC1eM5_EouM1oc07JaoXsMX_bSLn2AVCozAcdfHmo';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    window.supabase = supabase; // Make supabase available globally for auth.js
+
+    async function displayUserName() {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error || !session) {
+          console.error('Erro ao obter sessão:', error?.message);
+          document.getElementById('user-displayname').textContent = 'Não logado';
+          return;
+        }
+
+        const user = session.user;
+        if (!user) {
+          document.getElementById('user-displayname').textContent = 'Não logado';
+          return;
+        }
+
+        const { data: profileData, error: profileError } = await supabase
+          .from('users')
+          .select('username')
+          .eq('id', user.id)
+          .single();
+
+        if (profileError) {
+          console.error('Erro ao buscar perfil:', profileError.message);
+          return;
+        }
+
+        const userDisplayName = document.getElementById('user-displayname');
+        if (userDisplayName) {
+          userDisplayName.textContent = profileData.username || user.email || 'Usuário Desconhecido';
+        }
+      } catch (err) {
+        console.error('Erro inesperado:', err);
+      }
+    }
+
+    // Initialize auth and user display
+    document.addEventListener('DOMContentLoaded', async () => {
+      await auth.init(); // Initialize auth system
+      await displayUserName(); // Display user name after auth is initialized
+    });
+
+    let products = [];
+    let currentProductId = null; // Track which product is being edited
+
+    function formatCurrency(value) {
+      return `MZN ${value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ').replace('.', ',')}`;
+    }
+
+    function formatVatForDisplay(vat) {
+      return `${(vat * 100).toFixed(0)}%`; // Convert decimal to percentage for display
+    }
+
+    function parseVatFromDisplay(vatDisplay) {
+      return parseFloat(vatDisplay.replace('%', '')); // Convert percentage back to decimal for storage
+    }
+
+    async function fetchProducts() {
+      const productList = document.getElementById('product-list');
+      productList.innerHTML = `
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <span>Loading products...</span>
+        </div>
+      `;
+
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !session || !session.user) {
+          console.error('Error getting session:', sessionError?.message);
+          return;
+        }
+        
+        const userId = session.user.id;
+        // Fetch the user's row to check for created_by (parent)
+        const { data: userRow, error: userRowError } = await supabase
+          .from('users')
+          .select('created_by')
+          .eq('id', userId)
+          .single();
+        if (userRowError) {
+          console.error('Error fetching user row:', userRowError);
+          return;
+        }
+        let userIdsToFetch = [userId];
+        if (userRow && userRow.created_by) {
+          userIdsToFetch.push(userRow.created_by);
+        }
+        // Fetch products for self and parent (if any)
+        const { data, count, error } = await supabase
+          .from('products')
+          .select('*', { count: 'exact' })
+          .in('user_id', userIdsToFetch);
+
+        if (error) {
+          console.error('Error fetching products:', error);
+          productList.innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-exclamation-circle"></i>
+              <h3 data-translate="error_loading_products">Error Loading Products</h3>
+              <p data-translate="error_loading_products_message">There was an error loading your products. Please try again.</p>
+              <button class="btn-primary" onclick="fetchProducts()">
+                <i class="fas fa-sync"></i> <span data-translate="retry">Retry</span>
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        products = data;
+        displayProducts();
+
+        // Update product count in the header
+        const productListHeader = document.querySelector('#product-list h3');
+        if (productListHeader) {
+          productListHeader.textContent = `Products (${count || 0})`;
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+      }
+    }
+
+    function displayProducts() {
+        const productList = document.getElementById('product-list');
+        const isGridView = productList.classList.contains('grid-view');
+        
+        // Get filter values
+        const searchQuery = document.getElementById('product-search').value.toLowerCase();
+        const industryFilter = document.getElementById('industry-filter').value;
+        const vatFilter = document.getElementById('vat-filter').value;
+
+        // Apply filters
+        const filteredProducts = products.filter(product => {
+            const matchesSearch = product.description.toLowerCase().includes(searchQuery) ||
+                                product.tax_code.toLowerCase().includes(searchQuery);
+            const matchesIndustry = industryFilter === 'all' || product.industry === industryFilter;
+            const matchesVat = vatFilter === 'all' || 
+                             (product.tax_rate * 100).toFixed(0) === vatFilter;
+            
+            return matchesSearch && matchesIndustry && matchesVat;
+        });
+
+        if (filteredProducts.length === 0) {
+            productList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-filter"></i>
+                    <h3 data-translate="no_products_found">No Products Found</h3>
+                    <p data-translate="no_products_found_message">Try adjusting your filters or search criteria.</p>
+                    <button class="btn-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> <span data-translate="clear_filters">Clear Filters</span>
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        productList.innerHTML = filteredProducts.map((product, index) => `
+            <div class="product-item">
+                <div class="product-item-content">
+                    <div class="product-info">
+                        <h3 class="product-title">${product.description}</h3>
+                        <div class="product-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-tag"></i> ${formatCurrency(product.price)}
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-percent"></i> ${formatVatForDisplay(product.tax_rate)}
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-industry"></i> ${product.industry}
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-barcode"></i> ${product.tax_code}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="action-btn edit-btn" onclick="editProduct(${index})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Add view toggle handlers
+    document.getElementById('grid-view-btn').addEventListener('click', function() {
+        const productList = document.getElementById('product-list');
+        productList.classList.add('grid-view');
+        productList.classList.remove('list-view');
+        this.classList.add('active');
+        document.getElementById('list-view-btn').classList.remove('active');
+        displayProducts();
+    });
+
+    document.getElementById('list-view-btn').addEventListener('click', function() {
+        const productList = document.getElementById('product-list');
+        productList.classList.add('list-view');
+        productList.classList.remove('grid-view');
+        this.classList.add('active');
+        document.getElementById('grid-view-btn').classList.remove('active');
+        displayProducts();
+    });
+
+    // Add notification function
+    function showNotification(type, message) {
+        // Remove any existing notifications
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notification => notification.remove());
+        
+        // Create new notification
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Trigger animation
+        requestAnimationFrame(() => {
+            notification.classList.add('show');
+        });
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Add form submission handler
+    document.getElementById('product-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        await saveProduct();
+    });
+
+    // Enhance save product with loading state
+    async function saveProduct() {
+        const saveButton = document.querySelector('#product-form button[type="submit"]');
+        const originalText = saveButton.innerHTML;
+        
+        try {
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session?.user) {
+                showNotification('error', 'Please login to continue');
+                return;
+            }
+
+            // Fetch environment_id
+            let environment_id = null;
+            if (window.getCurrentEnvironmentId) {
+                try {
+                    environment_id = await window.getCurrentEnvironmentId();
+                } catch (e) {
+                    console.error('Could not fetch environment_id:', e);
+                }
+            }
+
+            const formData = {
+                description: document.getElementById('description').value.trim(),
+                price: parseFloat(document.getElementById('price').value),
+                tax_code: document.getElementById('tax-code').value.trim(),
+                industry: document.getElementById('industry').value,
+                tax_rate: document.getElementById('vat').value === 'other' 
+                    ? parseFloat(document.getElementById('other-vat').value) / 100 
+                    : parseFloat(document.getElementById('vat').value),
+                user_id: session.user.id,
+                environment_id: environment_id
+            };
+
+            if (!formData.description || isNaN(formData.price) || isNaN(formData.tax_rate) || !formData.industry) {
+                showNotification('error', 'Please fill in all required fields correctly');
+                return;
+            }
+
+            let response;
+            if (currentProductId) {
+                // Update existing product
+                response = await supabase
+                    .from('products')
+                    .update(formData)
+                    .eq('id', currentProductId)
+                    .eq('user_id', session.user.id);
+            } else {
+                // Create new product
+                response = await supabase
+                    .from('products')
+                    .insert([formData])
+                    .select();
+            }
+
+            if (response.error) throw response.error;
+
+            showNotification('success', `Product ${currentProductId ? 'updated' : 'created'} successfully!`);
+            resetForm();
+            await fetchProducts();
+            
+        } catch (err) {
+            console.error('Error saving product:', err);
+            showNotification('error', err.message || 'Error saving product');
+        } finally {
+            saveButton.disabled = false;
+            saveButton.innerHTML = originalText;
+        }
+    }
+
+    function resetForm() {
+        const form = document.getElementById('product-form');
+        form.reset();
+        document.getElementById('form-title').textContent = 'New Product';
+        document.querySelector('#product-form button[type="submit"]').textContent = 'Save Product';
+        currentProductId = null;
+        document.getElementById('other-vat-container').style.display = 'none';
+    }
+
+    // Delete product with modal confirmation
+    async function deleteProduct(index) {
+        const product = products[index];
+        const modal = document.getElementById('delete-modal');
+        
+        // Update modal content
+        modal.querySelector('.modal-body p').textContent = 
+            `Are you sure you want to delete "${product.description}"? This action cannot be undone.`;
+        
+        // Show modal (use .show class)
+        modal.classList.add('show');
+        
+        // Handle confirmation
+        const handleDelete = async () => {
+            try {
+                const { error } = await supabase
+                    .from('products')
+                    .delete()
+                    .eq('id', product.id)
+                    .eq('user_id', (await supabase.auth.getSession()).data.session.user.id);
+
+                if (error) throw error;
+                
+                products = products.filter(p => p.id !== product.id);
+                displayProducts();
+                showNotification('success', 'Product deleted successfully');
+            } catch (err) {
+                console.error('Error deleting product:', err);
+                showNotification('error', 'Error deleting product');
+            } finally {
+                modal.classList.remove('show');
+            }
+        };
+        
+        // Set up modal button handlers
+        modal.querySelector('#confirm-delete-btn').onclick = handleDelete;
+        modal.querySelector('#cancel-delete-btn').onclick = () => modal.classList.remove('show');
+        modal.querySelector('.close-modal').onclick = () => modal.classList.remove('show');
+    }
+
+    function editProduct(index) {
+        const product = products[index];
+        currentProductId = product.id;
+        const form = document.getElementById('product-form');
+        
+        // Populate form fields
+        document.getElementById('description').value = product.description;
+        document.getElementById('price').value = product.price;
+        document.getElementById('tax-code').value = product.tax_code;
+        document.getElementById('industry').value = product.industry;
+        
+        // Handle VAT rate
+        const vatSelect = document.getElementById('vat');
+        const standardRates = ['0', '0.16'];
+        const taxRate = product.tax_rate.toString();
+        
+        if (standardRates.includes(taxRate)) {
+            vatSelect.value = taxRate;
+            document.getElementById('other-vat-container').style.display = 'none';
+        } else {
+            vatSelect.value = 'other';
+            document.getElementById('other-vat-container').style.display = 'block';
+            document.getElementById('other-vat').value = (product.tax_rate * 100).toString();
+        }
+        
+        // Update form UI
+        document.getElementById('form-title').textContent = 'Edit Product';
+        document.querySelector('#product-form button[type="submit"]').textContent = 'Update Product';
+        
+        // Scroll form into view
+        form.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Add form cancel handler
+    document.getElementById('cancel-btn').addEventListener('click', resetForm);
+
+    // Make functions globally available
+    window.editProduct = editProduct;
+    window.deleteProduct = deleteProduct;
+
+    // Add filter event listeners
+    document.getElementById('product-search').addEventListener('input', displayProducts);
+    document.getElementById('industry-filter').addEventListener('change', displayProducts);
+    document.getElementById('vat-filter').addEventListener('change', displayProducts);
+
+    // Add clear filters function
+    function clearFilters() {
+        document.getElementById('product-search').value = '';
+        document.getElementById('industry-filter').value = 'all';
+        document.getElementById('vat-filter').value = 'all';
+        displayProducts();
+    }
+
+    // Make clearFilters available globally
+    window.clearFilters = clearFilters;
+
+    // --- CAE Industry Fetch & Populate ---
+    async function fetchAndPopulateIndustries() {
+      const industrySelect = document.getElementById('industry');
+      const industryFilter = document.getElementById('industry-filter');
+      try {
+        // Show loading state
+        industrySelect.innerHTML = '<option value="" data-translate="loading_industries">Loading industries...</option>';
+        industryFilter.innerHTML = '<option value="all" data-translate="all_industries">All Industries</option>';
+        // Fetch industries from cae table
+        const { data, error } = await supabase
+          .from('cae')
+          .select('Subclasse, Descricao')
+          .order('Descricao', { ascending: true });
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          industrySelect.innerHTML = '<option value="" data-translate="no_industries_found">No industries found</option>';
+          industryFilter.innerHTML = '<option value="all" data-translate="all_industries">All Industries</option>';
+          return;
+        }
+        // Only keep rows with a valid subclasse (number)
+        const validIndustries = data.filter(row => row.Subclasse && /^\d+$/.test(row.Subclasse) && row.Descricao && row.Descricao.trim() !== '');
+        // Sort by subclasse ascending (as number)
+        validIndustries.sort((a, b) => Number(a.Subclasse) - Number(b.Subclasse));
+        // Populate form select
+        industrySelect.innerHTML = '<option value="" data-translate="select_industry">Select industry</option>' +
+          validIndustries.map(row => `<option value="${row.Subclasse}">${row.Subclasse} - ${row.Descricao}</option>`).join('');
+        // Populate filter select
+        industryFilter.innerHTML = '<option value="all" data-translate="all_industries">All Industries</option>' +
+          validIndustries.map(row => `<option value="${row.Subclasse}">${row.Descricao}</option>`).join('');
+      } catch (err) {
+        industrySelect.innerHTML = '<option value="" data-translate="failed_load_industries">Failed to load industries</option>';
+        industryFilter.innerHTML = '<option value="all" data-translate="all_industries">All Industries</option>';
+        console.error('Error loading industries:', err);
+      }
+    }
+    // Call on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', fetchAndPopulateIndustries);
+
+    // Initial fetch
+    fetchProducts();
+  </script>
+    <!-- Notification badge synchronization -->
+    <script src="js/notification-badge.js"></script>
+    <script src="services/languageManager.js"></script>
+    <script>
+      // Initialize the language manager with the correct base path
+      window.languageManager = new LanguageManager('./');
+
+      // Initialize the language manager
+      document.addEventListener('DOMContentLoaded', async function() {
+        if (window.languageManager) {
+          const preferredLanguage = localStorage.getItem('preferredLanguage') || 'pt';
+          await window.languageManager.setLanguage(preferredLanguage);
+        }
+      });
+    </script>
+    <script src="components/user-restrictions.js"></script>
+    <script src="js/sendNotificationEmail.js"></script>
+    <script src="js/darkmode.js"></script>
+  </script>
+  <script type="module">
+    import { logUserAction } from './js/logUserAction.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      logUserAction('page_visit', 'User visited page: products.html');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WALAKA - Settings</title>
+  
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="components/sidebar.css"> 
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/invoice.css">
+  <link rel="stylesheet" href="assets/css/settings.css">
+
+  <link rel="stylesheet" href="css/hints.css">
+    
+  <!-- Hints System -->
+  <script src="js/hints/page-hints.js"></script>
+  <script src="js/hints/walaka-hints.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/darkmode.js"></script>
+
+  <link rel="icon" type="image/png" href="assets/images/walaka-assistant.PNG">
+
+  <style>
+[data-theme="dark"] body,
+[data-theme="dark"] .dashboard-container,
+[data-theme="dark"] .main-content,
+[data-theme="dark"] .settings-header,
+[data-theme="dark"] .settings-container,
+[data-theme="dark"] .settings-content,
+[data-theme="dark"] .settings-section,
+[data-theme="dark"] .form-group,
+[data-theme="dark"] .form-control {
+  background: #23262f !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .settings-header h1,
+[data-theme="dark"] .settings-header p,
+[data-theme="dark"] .settings-section h2,
+[data-theme="dark"] .settings-section h3,
+[data-theme="dark"] label {
+  color: #60a5fa !important;
+}
+[data-theme="dark"] .settings-tabs,
+[data-theme="dark"] .settings-tabs li,
+[data-theme="dark"] .settings-tabs a {
+  background: #181a20 !important;
+  color: #fff !important;
+  border-color: #2a2d3a !important;
+}
+[data-theme="dark"] .settings-tabs a.active,
+[data-theme="dark"] .settings-tabs a:active {
+  background: #2563eb !important;
+  color: #fff !important;
+  border-bottom: 2px solid #60a5fa !important;
+}
+[data-theme="dark"] .btn,
+[data-theme="dark"] .primary-btn,
+[data-theme="dark"] .secondary-btn {
+  background: #2563eb !important;
+  color: #fff !important;
+  border-color: #2563eb !important;
+}
+[data-theme="dark"] .btn:hover,
+[data-theme="dark"] .primary-btn:hover,
+[data-theme="dark"] .secondary-btn:hover {
+  background: #1e40af !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .form-actions {
+  background: #23262f !important;
+}
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: #181a20 !important;
+  color: #fff !important;
+  border: 1px solid #2a2d3a !important;
+}
+[data-theme="dark"] .modal,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-body,
+[data-theme="dark"] .modal-footer {
+  background: #23262f !important;
+  color: #fff !important;
+  border-color: #2a2d3a !important;
+}
+</style>
+
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar as direct child of dashboard-container -->
+    <aside class="sidebar">
+      <div id="sidebar-container"></div>
+      <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          fetch('components/sidebar.html')
+              .then(response => response.text())
+              .then(html => {
+                  // Extract only the inner content of <nav class="sidebar">
+                  const tempDiv = document.createElement('div');
+                  tempDiv.innerHTML = html;
+                  const navSidebar = tempDiv.querySelector('nav.sidebar');
+                  if (navSidebar) {
+                      document.getElementById('sidebar-container').innerHTML = navSidebar.innerHTML;
+                  } else {
+                      document.getElementById('sidebar-container').innerHTML = html; // fallback
+                  }
+                  var script = document.createElement('script');
+                  script.src = 'components/sidebar-actions.js';
+                  document.body.appendChild(script);
+                  var darkmodeScript = document.createElement('script');
+                  darkmodeScript.src = 'components/sidebar-darkmode.js';
+                  darkmodeScript.onload = function() {
+                      setTimeout(function() {
+                          if (window.initSidebarDarkModeIcon) window.initSidebarDarkModeIcon();
+                      }, 100);
+                  };
+                  document.body.appendChild(darkmodeScript);
+              })
+              .catch(err => {
+                  console.error('Failed to load sidebar:', err);
+              });
+      });
+      </script>
+    </aside>
+    <!-- Sidebar overlay for mobile/tablet -->
+    <div class="sidebar-overlay"></div>
+
+    <script type="module">
+      import { requireAuth } from './js/auth.js';
+      requireAuth();
+    </script>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <button class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="top-bar-menu">
+            <!-- Add any other top bar menu items specific to settings page if needed -->
+        </div>
+        
+        <div class="user-menu" style="margin-left:auto;">
+            <a href="notifications.html" class="notification-bell">
+                <i class="fas fa-bell"></i>
+                <span class="badge">0</span>
+            </a>
+            
+            <div class="user-profile" id="userProfile">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span id="user-displayname">Loading...</span>
+                <div class="dropdown-menu" id="userDropdown">
+                    <a href="profile.html">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </a>
+                    <a href="settings.html">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                    <a href="#">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- Settings Section Header -->
+      <div class="settings-header">
+        <h1 data-translate="settings_title">Settings & Configuration</h1>
+        <p data-translate="settings_description">Manage your application preferences and configuration settings</p>
+      </div>
+
+      <!-- Settings Navigation -->
+      <div class="settings-container">
+        <div class="settings-nav">
+          <ul class="settings-tabs">
+            <li><a href="#account-settings" class="active"><i class="fas fa-user-circle"></i> <span data-translate="account_settings">Account Settings</span></a></li>
+            <li><a href="#business-settings"><i class="fas fa-building"></i> <span data-translate="business_profile">Business Profile</span></a></li>
+            <li><a href="#appearance-settings"><i class="fas fa-palette"></i> <span data-translate="appearance">Appearance</span></a></li>
+            <li><a href="#invoice-settings"><i class="fas fa-file-invoice"></i> <span data-translate="invoice_settings">Invoice Settings</span></a></li>
+            <li><a href="#notification-settings"><i class="fas fa-bell"></i> <span data-translate="notifications">Notifications</span></a></li>
+            <li><a href="#security-settings"><i class="fas fa-shield-alt"></i> <span data-translate="security">Security</span></a></li>
+            <li><a href="#integrations-settings"><i class="fas fa-plug"></i> <span data-translate="integrations">Integrations</span></a></li>
+          </ul>
+        </div>
+
+        <div class="settings-content">
+          <!-- Account Settings -->
+          <section id="account-settings" class="settings-section active">
+            <div class="section-header">
+              <h2><i class="fas fa-user-circle"></i> <span data-translate="account_settings">Account Settings</span></h2>
+              <p data-translate="manage_account_info">Manage your personal account information</p>
+            </div>
+
+            <form id="user-settings-form">
+              <div class="form-group">
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="user-name-input" data-translate="name">Name:</label>
+                    <input type="text" id="user-name-input" name="user-name" data-translate-placeholder="name" placeholder="Enter your name" disabled required>
+                  </div>
+
+                  <div class="form-control">
+                    <label for="user-email-input" data-translate="email">Email:</label>
+                    <input type="email" id="user-email-input" name="user-email" data-translate-placeholder="email" placeholder="Enter your email" disabled required>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="user-phone" data-translate="phone_number">Phone Number:</label>
+                    <input type="tel" id="user-phone" name="user-phone" data-translate-placeholder="phone_number" placeholder="Enter your phone number" disabled>
+                  </div>
+
+                  <div class="form-control">
+                    <label for="user-language" data-translate="preferred_language">Preferred Language:</label>
+                    <select id="user-language" name="user-language" disabled>
+                      <option value="pt">Portuguese</option>
+                      <option value="en">English</option>
+                      <!-- <option value="es">Spanish</option> -->
+                      <!-- <option value="fr">French</option> -->
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="edit-user-settings" class="btn btn-primary" data-translate="edit">Edit</button>
+                <button type="button" id="save-user-settings" style="display: none;" class="btn btn-success" data-translate="save">Save</button>
+                <button type="button" id="cancel-user-settings" style="display: none;" class="btn btn-secondary" data-translate="cancel">Cancel</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Business Profile Settings -->
+          <section id="business-settings" class="settings-section">
+            <div class="section-header">
+              <h2><i class="fas fa-building"></i> <span data-translate="business_profile">Business Profile</span></h2>
+              <p data-translate="manage_business_info">Manage your business information and profile</p>
+            </div>
+
+            <form id="business-settings-form">
+              <div class="form-group">
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="business-name" data-translate="company_name">Company Name:</label>
+                    <input type="text" id="business-name" name="business-name" data-translate-placeholder="company_name" placeholder="Enter company name">
+                  </div>
+
+                  <div class="form-control">
+                    <label for="tax-id" data-translate="tax_id">Tax ID / NIF:</label>
+                    <input type="text" id="tax-id" name="tax-id" data-translate-placeholder="tax_id" placeholder="Enter your tax identification number">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="business-address" data-translate="business_address">Business Address:</label>
+                    <textarea id="business-address" name="business-address" data-translate-placeholder="business_address" placeholder="Enter your business address" rows="3"></textarea>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="business-website" data-translate="website">Website:</label>
+                    <input type="url" id="business-website" name="business-website" data-translate-placeholder="website" placeholder="https://www.example.com">
+                  </div>
+
+                  <div class="form-control">
+                    <label for="business-email" data-translate="business_email">Business Email:</label>
+                    <input type="email" id="business-email" name="business-email" data-translate-placeholder="business_email" placeholder="contact@yourcompany.com">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="save-business-settings" class="btn btn-success" data-translate="save_changes">Save Changes</button>
+                <button type="button" id="reset-business-settings" class="btn btn-secondary" data-translate="reset">Reset</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Appearance Settings -->
+          <section id="appearance-settings" class="settings-section">
+            <div class="section-header">
+              <h2><i class="fas fa-palette"></i> <span data-translate="appearance">Appearance</span></h2>
+              <p data-translate="customize_appearance">Customize the appearance of your dashboard and documents</p>
+            </div>
+
+            <form id="appearance-settings-form">
+              <div class="form-group">
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="company-logo" data-translate="company_logo">Company Logo:</label>
+                    <div class="logo-upload-container">
+                      <div class="logo-preview">
+                        <div class="logo-placeholder">
+                          <i class="fas fa-image"></i>
+                          <span data-translate="no_logo_uploaded">No logo uploaded</span>
+                        </div>
+                        <img id="logo-preview-img" src="" alt="" style="display: none;">
+                      </div>
+                      <div class="logo-upload-controls">
+                        <input type="file" id="company-logo" name="company-logo" accept="image/*">
+                        <p class="upload-help" data-translate="recommended_logo_size">Recommended size: 200x200px. Max size: 2MB</p>
+                        <button type="button" id="remove-logo" class="btn btn-danger-outlined" data-translate="remove_logo">Remove Logo</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="theme-selection" data-translate="dashboard_theme">Dashboard Theme:</label>
+                    <select id="theme-selection" name="theme-selection">
+                      <option value="light" data-translate="light_theme">Light Theme</option>
+                      <option value="dark" data-translate="dark_theme">Dark Theme</option>
+                      <option value="auto" data-translate="auto_theme">Auto (System Default)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-control">
+                    <label for="accent-color" data-translate="accent_color">Accent Color:</label>
+                    <div class="color-picker-container">
+                      <input type="color" id="accent-color" name="accent-color" value="#007ec7">
+                      <span id="color-value">#007ec7</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="font-size" data-translate="font_size">Interface Font Size:</label>
+                    <select id="font-size" name="font-size">
+                      <option value="small" data-translate="small">Small</option>
+                      <option value="medium" data-translate="medium">Medium</option>
+                      <option value="large" data-translate="large">Large</option>
+                    </select>
+                  </div>
+
+                  <div class="form-control">
+                    <label for="sidebar-position" data-translate="sidebar_position">Sidebar Position:</label>
+                    <select id="sidebar-position" name="sidebar-position">
+                      <option value="left" data-translate="left">Left</option>
+                      <option value="right" data-translate="right">Right</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="save-appearance-settings" class="btn btn-success" data-translate="save_changes">Save Changes</button>
+                <button type="button" id="reset-appearance-settings" class="btn btn-secondary" data-translate="reset_to_default">Reset to Default</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Invoice Settings -->
+          <section id="invoice-settings" class="settings-section">
+            <div class="section-header">
+              <h2><i class="fas fa-file-invoice"></i> <span data-translate="invoice_settings">Invoice Settings</span></h2>
+              <p data-translate="configure_invoice_preferences">Configure your invoice preferences and default values</p>
+            </div>
+
+            <form id="invoice-settings-form">
+              <div class="form-group">
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="invoice-prefix" data-translate="invoice_number_prefix">Invoice Number Prefix:</label>
+                    <input type="text" id="invoice-prefix" name="invoice-prefix" data-translate-placeholder="invoice_number_prefix" placeholder="e.g., INV-">
+                  </div>
+
+                  <div class="form-control">
+                    <label for="invoice-next-number" data-translate="next_invoice_number">Next Invoice Number:</label>
+                    <input type="number" id="invoice-next-number" name="invoice-next-number" min="1" value="1">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="invoice-template" data-translate="default_invoice_template">Default Invoice Template:</label>
+                    <select id="invoice-template" name="invoice-template">
+                      <option value="classic" data-translate="classic_template">Classic Template</option>
+                      <option value="modern" data-translate="modern_template">Modern Template</option>
+                    </select>
+                    <!--<div class="template-preview">
+                      <h4 data-translate="template_preview">Template Preview</h4>
+                      <div id="template-preview-container" class="preview-container">
+                         Template preview will be loaded here 
+                      </div>
+                    </div>-->
+                  </div>
+
+                  <div class="form-control">
+                    <label for="invoice-color" data-translate="invoice_accent_color">Invoice Accent Color:</label>
+                    <div class="color-picker-container">
+                      <input type="color" id="invoice-color" name="invoice-color" value="#007ec7">
+                      <span id="invoice-color-value">#007ec7</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="default-currency" data-translate="default_currency">Default Currency:</label>
+                    <select id="default-currency" name="default-currency">
+                      <option value="MZN">Metical (MZN)</option>
+                      <option value="EUR">Euro (€)</option>
+                      <option value="USD">US Dollar ($)</option>
+                      <option value="GBP">British Pound (£)</option>
+                      <option value="AOA">Angolan Kwanza (Kz)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-control">
+                    <label for="default-tax-rate" data-translate="default_tax_rate">Default Tax Rate (%):</label>
+                    <input type="number" id="default-tax-rate" name="default-tax-rate" min="0" max="100" step="0.01" value="23">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="payment-terms" data-translate="default_payment_terms">Default Payment Terms:</label>
+                    <select id="payment-terms" name="payment-terms">
+                      <option value="due-receipt" data-translate="due_on_receipt">Due on Receipt</option>
+                      <option value="net-15" data-translate="net_15_days">Net 15 Days</option>
+                      <option value="net-30" data-translate="net_30_days">Net 30 Days</option>
+                      <option value="net-60" data-translate="net_60_days">Net 60 Days</option>
+                    </select>
+                  </div>
+
+                  <div class="form-control">
+                    <label for="invoice-notes" data-translate="default_invoice_notes">Default Invoice Notes:</label>
+                    <textarea id="invoice-notes" name="invoice-notes" data-translate-placeholder="default_invoice_notes" placeholder="Enter default notes to appear on all invoices"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="save-invoice-settings" class="btn btn-success" data-translate="save_changes">Save Changes</button>
+                <button type="button" id="reset-invoice-settings" class="btn btn-secondary" data-translate="reset">Reset</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Notification Settings -->
+          <section id="notification-settings" class="settings-section">
+            <div class="section-header">
+              <h2><i class="fas fa-bell"></i> <span data-translate="notifications">Notifications</span></h2>
+              <p data-translate="manage_notification_preferences">Manage your notification preferences</p>
+            </div>
+
+            <form id="notification-settings-form">
+              <div class="form-group">
+                <h3 data-translate="email_notifications">Email Notifications</h3>
+                <div class="form-row">
+                  <div class="form-control checkbox-control">
+                    <input type="checkbox" id="notify-invoice-created" name="notify-invoice-created" checked>
+                    <label for="notify-invoice-created" data-translate="invoice_created">Invoice Created</label>
+                  </div>
+
+                  <div class="form-control checkbox-control">
+                    <input type="checkbox" id="notify-payment-received" name="notify-payment-received" checked>
+                    <label for="notify-payment-received" data-translate="payment_received">Payment Received</label>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control checkbox-control">
+                    <input type="checkbox" id="notify-invoice-due" name="notify-invoice-due" checked>
+                    <label for="notify-invoice-due" data-translate="invoice_due_reminder">Invoice Due Reminder</label>
+                  </div>
+
+                  <div class="form-control checkbox-control">
+                    <input type="checkbox" id="notify-invoice-overdue" name="notify-invoice-overdue" checked>
+                    <label for="notify-invoice-overdue" data-translate="invoice_overdue_alert">Invoice Overdue Alert</label>
+                  </div>
+                </div>
+
+                <h3 data-translate="system_notifications">System Notifications</h3>
+                <div class="form-row">
+                  <div class="form-control checkbox-control">
+                    <input type="checkbox" id="notify-product-low-stock" name="notify-product-low-stock" checked>
+                    <label for="notify-product-low-stock" data-translate="product_low_stock">Product Low Stock</label>
+                  </div>
+
+                  <div class="form-control checkbox-control">
+                    <input type="checkbox" id="notify-system-updates" name="notify-system-updates" checked>
+                    <label for="notify-system-updates" data-translate="system_updates">System Updates</label>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control checkbox-control">
+                    <input type="checkbox" id="notify-client-activity" name="notify-client-activity">
+                    <label for="notify-client-activity" data-translate="client_portal_activity">Client Portal Activity</label>
+                  </div>
+
+                  <div class="form-control checkbox-control">
+                    <input type="checkbox" id="notify-login-attempts" name="notify-login-attempts" checked>
+                    <label for="notify-login-attempts" data-translate="unusual_login_attempts">Unusual Login Attempts</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="save-notification-settings" class="btn btn-success" data-translate="save_changes">Save Changes</button>
+                <button type="button" id="reset-notification-settings" class="btn btn-secondary" data-translate="reset">Reset</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Security Settings -->
+          <section id="security-settings" class="settings-section">
+            <div class="section-header">
+              <h2><i class="fas fa-shield-alt"></i> <span data-translate="security">Security</span></h2>
+              <p data-translate="manage_account_security">Manage your account security settings</p>
+            </div>
+
+            <form id="security-settings-form">
+              <div class="form-group">
+                <h3 data-translate="password_management">Password Management</h3>
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="current-password" data-translate="current_password">Current Password:</label>
+                    <input type="password" id="current-password" name="current-password" data-translate-placeholder="current_password" placeholder="Enter current password">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="new-password" data-translate="new_password">New Password:</label>
+                    <input type="password" id="new-password" name="new-password" data-translate-placeholder="new_password" placeholder="Enter new password">
+                    <div class="password-strength-meter">
+                      <div class="strength-bar"></div>
+                    </div>
+                    <p class="password-strength-text" data-translate="password_strength">Password strength: <span data-translate="none">None</span></p>
+                  </div>
+
+                  <div class="form-control">
+                    <label for="confirm-password" data-translate="confirm_new_password">Confirm New Password:</label>
+                    <input type="password" id="confirm-password" name="confirm-password" data-translate-placeholder="confirm_new_password" placeholder="Confirm new password">
+                  </div>
+                </div>
+
+                <h3 data-translate="two_factor_authentication">Two-Factor Authentication</h3>
+                <div class="form-row">
+                  <div class="form-control toggle-control">
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="enable-2fa" name="enable-2fa">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <label for="enable-2fa" data-translate="enable_2fa">Enable Two-Factor Authentication</label>
+                  </div>
+                </div>
+
+                <div id="2fa-setup" class="hidden">
+                  <div class="form-row">
+                    <div class="form-control">
+                      <label data-translate="scan_qr_code">Scan this QR code with your authenticator app:</label>
+                      <div class="qr-placeholder">
+                        <i class="fas fa-qrcode"></i>
+                        <p data-translate="qr_code_will_appear">QR Code will appear here when enabled</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-control">
+                      <label for="verification-code" data-translate="verification_code">Verification Code:</label>
+                      <input type="text" id="verification-code" name="verification-code" data-translate-placeholder="verification_code" placeholder="Enter 6-digit code">
+                    </div>
+                  </div>
+                </div>
+
+                <h3 data-translate="session_management">Session Management</h3>
+                <div class="form-row">
+                  <div class="form-control">
+                    <label for="session-timeout" data-translate="session_timeout">Session Timeout (minutes):</label>
+                    <input type="number" id="session-timeout" name="session-timeout" min="5" max="240" value="30">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-control toggle-control">
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="require-login-confirmation" name="require-login-confirmation">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <label for="require-login-confirmation" data-translate="require_login_confirmation">Require confirmation for new device logins</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="save-security-settings" class="btn btn-success" data-translate="save_changes">Save Changes</button>
+                <button type="button" id="reset-security-settings" class="btn btn-secondary" data-translate="reset">Reset</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Integrations Settings -->
+          <section id="integrations-settings" class="settings-section">
+            <div class="section-header">
+              <h2><i class="fas fa-plug"></i> <span data-translate="integrations">Integrations</span></h2>
+              <p data-translate="connect_external_services">Connect external services and APIs</p>
+            </div>
+
+            <div class="integrations-container">
+              <div class="integration-card">
+                <div class="integration-logo">
+                  <i class="fab fa-paypal"></i>
+                </div>
+                <div class="integration-info">
+                  <h3 data-translate="paypal">PayPal</h3>
+                  <p data-translate="accept_payments_paypal">Accept payments via PayPal</p>
+                  <div class="integration-status not-connected">
+                    <span data-translate="not_connected">Not Connected</span>
+                  </div>
+                </div>
+                <div class="integration-actions">
+                  <button class="btn btn-primary" data-translate="connect">Connect</button>
+                </div>
+              </div>
+
+              <div class="integration-card">
+                <div class="integration-logo">
+                  <i class="fas fa-university"></i>
+                </div>
+                <div class="integration-info">
+                  <h3 data-translate="bim">BIM</h3>
+                  <p data-translate="process_bank_payments">Process bank payments</p>
+                  <div class="integration-status not-connected">
+                    <span data-translate="not_connected">Not Connected</span>
+                  </div>
+                </div>
+                <div class="integration-actions">
+                  <button class="btn btn-primary" data-translate="connect">Connect</button>
+                </div>
+              </div>
+
+              <div class="integration-card">
+                <div class="integration-logo">
+                  <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="integration-info">
+                  <h3 data-translate="mpesa">M-PESA</h3>
+                  <p data-translate="mobile_money_transfers">Mobile money transfers</p>
+                  <div class="integration-status connected">
+                    <span data-translate="connected">Connected</span>
+                  </div>
+                </div>
+                <div class="integration-actions">
+                  <button class="btn btn-danger-outlined" data-translate="disconnect">Disconnect</button>
+                </div>
+              </div>
+
+              <div class="integration-card">
+                <div class="integration-logo">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div class="integration-info">
+                  <h3 data-translate="email_service">Email Service</h3>
+                  <p data-translate="configure_email_delivery">Configure your email delivery</p>
+                  <div class="integration-status not-connected">
+                    <span data-translate="not_connected">Not Connected</span>
+                  </div>
+                </div>
+                <div class="integration-actions">
+                  <button class="btn btn-primary" data-translate="configure">Configure</button>
+                </div>
+              </div>
+
+              <div class="integration-card">
+                <div class="integration-logo">
+                  <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="integration-info">
+                  <h3 data-translate="emola">E-MOLA</h3>
+                  <p data-translate="mobile_money_transfers">Mobile money transfers</p>
+                  <div class="integration-status not-connected">
+                    <span data-translate="not_connected">Not Connected</span>
+                  </div>
+                </div>
+                <div class="integration-actions">
+                  <button class="btn btn-primary" data-translate="connect">Connect</button>
+                </div>
+              </div>
+
+              <div class="integration-card">
+                <div class="integration-logo">
+                  <i class="fas fa-university"></i>
+                </div>
+                <div class="integration-info">
+                  <h3 data-translate="bci">BCI</h3>
+                  <p data-translate="bank_integration">Bank integration</p>
+                  <div class="integration-status not-connected">
+                    <span data-translate="not_connected">Not Connected</span>
+                  </div>
+                </div>
+                <div class="integration-actions">
+                  <button class="btn btn-primary" data-translate="connect">Connect</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-container">
+    <!-- Toast notifications will be dynamically inserted here -->
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmation-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title" data-translate="confirm_action">Confirm Action</h3>
+        <button id="close-modal" class="close-button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-message" data-translate="are_you_sure">Are you sure you want to proceed with this action?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="modal-cancel" class="btn btn-secondary" data-translate="cancel">Cancel</button>
+        <button id="modal-confirm" class="btn btn-primary" data-translate="confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Supabase -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  
+  <!-- Initialize Supabase -->
+  <script>
+    window.supabase = supabase.createClient(
+      'https://qvmtozjvjflygbkjecyj.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2bXRvemp2amZseWdia2plY3lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMjc2MjMsImV4cCI6MjA2MTcwMzYyM30.DJMC1eM5_EouM1oc07JaoXsMX_bSLn2AVCozAcdfHmo'
+    );
+  </script>
+  
+  <!-- Load Language Manager BEFORE settings.js -->
+  <script src="services/languageManager.js"></script>
+  <!-- Notification badge synchronization -->
+  <script src="js/notification-badge.js"></script>
+  <script>
+    window.languageManager = new LanguageManager('./');
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize language manager with database sync
+      await window.languageManager.initialize();
+      // Set up language change listener for the settings page
+      const langSelect = document.getElementById('user-language');
+      if (langSelect) {
+        langSelect.value = window.languageManager.currentLang;
+        langSelect.addEventListener('change', async (e) => {
+          const newLang = e.target.value;
+          await window.languageManager.setLanguage(newLang);
+          // Update the select value to reflect the current language
+          langSelect.value = window.languageManager.currentLang;
+        });
+      }
+      // Optionally, set language from localStorage if available
+      const lang = localStorage.getItem('preferredLanguage') || 'pt';
+      window.languageManager.setLanguage(lang);
+    });
+  </script>
+  <!-- Load your settings.js -->
+  <script src="assets/js/settings.js"></script>
+  <script src="components/user-restrictions.js"></script>
+  
+  <script type="module">
+    import { logUserAction } from './js/logUserAction.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      logUserAction('page_visit', 'User visited page: settings.html');
+    });
+  </script>
+</body>
+<!-- Sidebar toggle logic for responsive (ensure this is last) -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const dashboardContainer = document.querySelector('.dashboard-container');
+  const menuToggle = document.querySelector('.menu-toggle');
+  const sidebarOverlay = document.querySelector('.sidebar-overlay');
+  // Toggle sidebar on menu button click
+  if (menuToggle) {
+    menuToggle.addEventListener('click', function() {
+      dashboardContainer.classList.toggle('sidebar-active');
+    });
+  }
+  // Close sidebar on overlay click
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', function() {
+      dashboardContainer.classList.remove('sidebar-active');
+    });
+  }
+  // Optional: close sidebar on ESC key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      dashboardContainer.classList.remove('sidebar-active');
+    }
+  });
+  // On resize, remove sidebar-active if desktop
+  function handleResize() {
+    if (window.innerWidth >= 992) {
+      dashboardContainer.classList.remove('sidebar-active');
+    }
+  }
+  window.addEventListener('resize', handleResize);
+  handleResize();
+});
+</script>
+</html>
